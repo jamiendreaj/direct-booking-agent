@@ -1,0 +1,79 @@
+{
+  "_note": "One file per property. Copy this, fill it in from the hotel's own website and a 30-minute call with the owner. The agent can state NOTHING that is not in this file or returned by a tool.",
+
+  "id": "slug-used-on-the-command-line",
+  "name": "Hotel ___",
+  "town": "",
+  "region": "",
+  "country": "Italy",
+  "stars": 0,
+  "rooms": 0,
+
+  "contact": {
+    "owner_name": "",
+    "owner_email": "",
+    "reply_from": "",
+    "phone": ""
+  },
+
+  "languages": ["it", "en", "de", "fr", "es", "nl"],
+
+  "booking": {
+    "engine": "",
+    "direct_url": "",
+    "direct_advantage": "State the real, specific direct-booking benefit the owner has agreed to. Leave empty if there isn't one — do NOT invent one.",
+    "rate_source": "manual"
+  },
+
+  "room_types": [
+    {
+      "name": "",
+      "sleeps": 0,
+      "beds": "",
+      "size_sqm": 0,
+      "view": "",
+      "notes": ""
+    }
+  ],
+
+  "facts": {
+    "check_in": "",
+    "check_out": "",
+    "breakfast": "",
+    "parking": "",
+    "pets": "",
+    "children": "",
+    "cots": "",
+    "extra_beds": "",
+    "accessibility": "",
+    "air_conditioning": "",
+    "wifi": "",
+    "pool": "",
+    "restaurant": "",
+    "smoking": "",
+    "payment_methods": "",
+    "city_tax": "",
+    "cancellation": "",
+    "deposit": "",
+    "nearest_station": "",
+    "nearest_airport": "",
+    "transfers": "",
+    "season": ""
+  },
+
+  "faq": [
+    { "q": "", "a": "" }
+  ],
+
+  "escalate": {
+    "always": [
+      "groups of 5 rooms or more",
+      "weddings and events",
+      "complaints of any kind",
+      "requests for a discount or a rate not on the rate card",
+      "anything about an existing booking",
+      "anything the file does not answer"
+    ],
+    "note_to_owner_language": "it"
+  }
+}

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Richieste dirette — pannello struttura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --paper:#f6f8f7;--surface:#fff;--sunk:#edf1ef;
+    --ink:#0f1f1b;--ink2:#41564f;--ink3:#72887f;
+    --rule:#d9e3df;--rule2:#e8eeeb;
+    --acc:#0d6b5e;--acc-soft:#e2f0ec;
+    --good:#1d6f4a;--good-soft:#e1f1e8;
+    --warn:#9a5513;--warn-soft:#fbeedd;
+    --disp:"Instrument Sans",system-ui,sans-serif;
+    --body:"Public Sans",system-ui,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --paper:#0b1512;--surface:#13201c;--sunk:#101b18;
+    --ink:#e6efeb;--ink2:#a8bdb5;--ink3:#7a9089;
+    --rule:#22332e;--rule2:#1a2824;
+    --acc:#5cc5b1;--acc-soft:#112b26;
+    --good:#6fc394;--good-soft:#122a1f;
+    --warn:#d9a55e;--warn-soft:#2a2114;
+  }}
+  :root[data-theme="dark"]{
+    --paper:#0b1512;--surface:#13201c;--sunk:#101b18;
+    --ink:#e6efeb;--ink2:#a8bdb5;--ink3:#7a9089;
+    --rule:#22332e;--rule2:#1a2824;
+    --acc:#5cc5b1;--acc-soft:#112b26;
+    --good:#6fc394;--good-soft:#122a1f;
+    --warn:#d9a55e;--warn-soft:#2a2114;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15.5px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .page{max-width:1000px;margin:0 auto;padding:34px 20px 80px}
+  header{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--ink);padding-bottom:14px}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin:0 0 6px}
+  h1{font-family:var(--disp);font-weight:700;font-size:1.7rem;letter-spacing:-.02em;margin:0;line-height:1.1}
+  .period{font-family:var(--mono);font-size:11.5px;color:var(--ink3);text-align:right}
+  .demo{margin:16px 0 0;background:var(--warn-soft);border-left:3px solid var(--warn);padding:10px 14px;font-size:13.5px;color:var(--ink2)}
+  .demo strong{color:var(--ink)}
+  h2{font-family:var(--disp);font-weight:600;font-size:1.05rem;margin:36px 0 12px;letter-spacing:-.01em}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:22px}
+  .kpi{background:var(--surface);padding:16px 18px}
+  .kpi .label{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);margin:0 0 7px}
+  .kpi .v{font-family:var(--disp);font-weight:700;font-size:1.95rem;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .kpi .sub{font-size:12.5px;color:var(--ink2);margin:6px 0 0}
+  .kpi .delta{font-family:var(--mono);font-size:11px;font-weight:500}
+  .up{color:var(--good)}.down{color:var(--warn)}
+  .bars{display:flex;flex-direction:column;gap:7px;margin:0}
+  .bar{display:grid;grid-template-columns:106px 1fr 58px;gap:11px;align-items:center}
+  .bar .n{font-size:13.5px;color:var(--ink2)}
+  .bar .track{background:var(--sunk);height:19px;position:relative;overflow:hidden}
+  .bar .fill{position:absolute;inset:0 auto 0 0;background:var(--acc);opacity:.82}
+  .bar .val{font-family:var(--mono);font-size:12px;color:var(--ink2);text-align:right;font-variant-numeric:tabular-nums}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  @media(max-width:720px){.split{grid-template-columns:1fr;gap:0}}
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px}
+  th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:500;padding:11px 13px;border-bottom:1px solid var(--rule);white-space:nowrap}
+  td{padding:10px 13px;border-bottom:1px solid var(--rule2);color:var(--ink2);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .pill{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;padding:2px 7px;border-radius:2px;white-space:nowrap}
+  .pill.sent{background:var(--good-soft);color:var(--good)}
+  .pill.esc{background:var(--warn-soft);color:var(--warn)}
+  .pill.wait{background:var(--sunk);color:var(--ink3)}
+  .lang{font-family:var(--mono);font-size:11px;color:var(--ink3);text-transform:uppercase}
+  .mins{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+  .note{color:var(--ink3);font-size:13px;max-width:62ch;margin:12px 0 0}
+  footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--rule);color:var(--ink3);font-size:12.5px}
+  .themebtn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:var(--surface);color:var(--ink2);border:1px solid var(--rule);border-radius:100px;padding:7px 12px}
+  .themebtn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <p class="eyebrow">Assistente richieste dirette</p>
+      <h1 id="hotel">Hotel Riva Sorgente</h1>
+    </div>
+    <div class="period" id="period">1–30 settembre 2026</div>
+  </header>
+
+  <p class="demo" id="demo"><strong>Dati dimostrativi.</strong> Questa pagina mostra numeri di esempio per una struttura fittizia. Con <code>dashboard/data.json</code> presente, carica i dati reali.</p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="split">
+    <section>
+      <h2>Lingua della richiesta</h2>
+      <div class="bars" id="langs"></div>
+      <p class="note" id="langnote"></p>
+    </section>
+    <section>
+      <h2>Tempo di risposta</h2>
+      <div class="bars" id="buckets"></div>
+      <p class="note">Prima del servizio la mediana era di 14 ore e 20 minuti, calcolata sulle richieste del mese precedente.</p>
+    </section>
+  </div>
+
+  <h2>Richieste del periodo</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Data</th><th>Lingua</th><th>Richiesta</th><th>Risposta in</th><th>Esito</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="note">«Inoltrata» indica una richiesta che l'assistente non ha gestito da sé e ha passato alla struttura — disponibilità, gruppi, tariffe fuori listino e tutto ciò che non è nella scheda struttura.</p>
+
+  <footer id="foot"></footer>
+</div>
+<button class="themebtn" id="t" type="button" aria-label="Cambia tema">Tema</button>
+
+<script>
+const DEMO = {
+  hotel: "Hotel Riva Sorgente", period: "1–30 settembre 2026", demo: true,
+  kpis: {
+    enquiries: { v: 118, sub: "richieste ricevute", delta: null },
+    median: { v: "4 min", sub: "mediana di risposta", delta: "da 14h 20m", dir: "up" },
+    answered_direct: { v: "81%", sub: "gestite senza intervento", delta: "96 su 118", dir: "up" },
+    escalated: { v: 22, sub: "inoltrate alla struttura", delta: "19% delle richieste", dir: null },
+    direct_bookings: { v: 31, sub: "prenotazioni dirette", delta: "+9 sul mese precedente", dir: "up" },
+    margin: { v: "€4.650", sub: "margine stimato recuperato", delta: "9 × €150 ca.", dir: "up" }
+  },
+  languages: [
+    { n: "Inglese", v: 44 }, { n: "Tedesco", v: 31 }, { n: "Italiano", v: 19 },
+    { n: "Francese", v: 12 }, { n: "Olandese", v: 7 }, { n: "Spagnolo", v: 5 }
+  ],
+  buckets: [
+    { n: "< 5 min", v: 94 }, { n: "5–30 min", v: 14 },
+    { n: "30 min – 2 h", v: 7 }, { n: "> 2 h", v: 3 }
+  ],
+  rows: [
+    { d: "28 set, 21:48", l: "de", q: "Familienzimmer für 4 Personen, Juli", m: "3 min", s: "sent" },
+    { d: "28 set, 19:12", l: "en", q: "Parking and late arrival at 23:30", m: "2 min", s: "sent" },
+    { d: "27 set, 23:05", l: "en", q: "Availability first weekend of August", m: "4 min", s: "esc" },
+    { d: "27 set, 16:40", l: "fr", q: "Accès depuis la gare de Varenna", m: "2 min", s: "sent" },
+    { d: "27 set, 09:22", l: "it", q: "Tariffa Junior Suite 5–8 luglio", m: "3 min", s: "sent" },
+    { d: "26 set, 22:31", l: "nl", q: "Annuleringsbeleid", m: "2 min", s: "sent" },
+    { d: "26 set, 14:08", l: "en", q: "8 rooms for a company offsite in May", m: "5 min", s: "esc" },
+    { d: "25 set, 20:55", l: "de", q: "Transfer ab Malpensa, Preis", m: "3 min", s: "sent" },
+    { d: "25 set, 11:17", l: "es", q: "Habitación accesible y ascensor", m: "2 min", s: "sent" },
+    { d: "24 set, 18:44", l: "en", q: "Is the wifi good enough for video calls", m: "4 min", s: "esc" }
+  ]
+};
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function bars(el, items) {
+  const max = Math.max(...items.map((i) => i.v), 1);
+  el.innerHTML = items.map((i) => `
+    <div class="bar">
+      <div class="n">${esc(i.n)}</div>
+      <div class="track"><div class="fill" style="width:${(i.v / max * 100).toFixed(1)}%"></div></div>
+      <div class="val">${i.v}</div>
+    </div>`).join("");
+}
+
+const KPI_ORDER = ["enquiries", "median", "answered_direct", "escalated", "direct_bookings", "margin"];
+const KPI_LABEL = {
+  enquiries: "Richieste", median: "Tempo di risposta", answered_direct: "Autonomia",
+  escalated: "Inoltrate", direct_bookings: "Prenotazioni dirette", margin: "Margine recuperato"
+};
+const STATUS = { sent: ["sent", "Risposta inviata"], esc: ["esc", "Inoltrata"], wait: ["wait", "In attesa"] };
+
+function render(d) {
+  document.getElementById("hotel").textContent = d.hotel;
+  document.getElementById("period").textContent = d.period;
+  document.getElementById("demo").hidden = !d.demo;
+
+  document.getElementById("kpis").innerHTML = KPI_ORDER.filter((k) => d.kpis[k]).map((k) => {
+    const x = d.kpis[k];
+    return `<div class="kpi">
+      <p class="label">${KPI_LABEL[k]}</p>
+      <div class="v">${esc(x.v)}</div>
+      <p class="sub">${esc(x.sub)}${x.delta ? ` · <span class="delta ${x.dir === "up" ? "up" : x.dir === "down" ? "down" : ""}">${esc(x.delta)}</span>` : ""}</p>
+    </div>`;
+  }).join("");
+
+  bars(document.getElementById("langs"), d.languages);
+  bars(document.getElementById("buckets"), d.buckets);
+
+  const total = d.languages.reduce((a, b) => a + b.v, 0);
+  const nonIt = total - (d.languages.find((l) => /italian/i.test(l.n))?.v ?? 0);
+  document.getElementById("langnote").textContent =
+    `${Math.round(nonIt / total * 100)}% delle richieste arriva in una lingua diversa dall'italiano.`;
+
+  document.getElementById("rows").innerHTML = d.rows.map((r) => {
+    const [cls, label] = STATUS[r.s] ?? STATUS.wait;
+    return `<tr>
+      <td>${esc(r.d)}</td>
+      <td class="lang">${esc(r.l)}</td>
+      <td>${esc(r.q)}</td>
+      <td class="mins">${esc(r.m)}</td>
+      <td><span class="pill ${cls}">${label}</span></td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("foot").textContent =
+    `Il margine recuperato è una stima: prenotazioni dirette in più rispetto al mese precedente, moltiplicate per la differenza di commissione dichiarata dalla struttura. Non è una cifra contabile.`;
+}
+
+(async function () {
+  let data = DEMO;
+  try {
+    const res = await fetch("data.json", { cache: "no-store" });
+    if (res.ok) data = { demo: false, ...(await res.json()) };
+  } catch {}
+  render(data);
+})();
+
+(function () {
+  const r = document.documentElement, b = document.getElementById("t");
+  try { const s = localStorage.getItem("db-theme"); if (s) r.setAttribute("data-theme", s); } catch {}
+  b.addEventListener("click", () => {
+    let cur = r.getAttribute("data-theme");
+    if (!cur) cur = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const next = cur === "dark" ? "light" : "dark";
+    r.setAttribute("data-theme", next);
+    try { localStorage.setItem("db-theme", next); } catch {}
+  });
+})();
+</script>
+</body>
+</html>

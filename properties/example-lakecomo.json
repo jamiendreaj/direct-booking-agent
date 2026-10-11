@@ -1,0 +1,87 @@
+{
+  "_note": "EXAMPLE ONLY — a fictional property, used for the demo and the eval suite. Not a real hotel. Replace entirely before any real pitch.",
+
+  "id": "example-lakecomo",
+  "name": "Hotel Riva Sorgente",
+  "town": "Menaggio",
+  "region": "Lake Como",
+  "country": "Italy",
+  "stars": 4,
+  "rooms": 28,
+
+  "contact": {
+    "owner_name": "Sig.ra Elena Brambilla",
+    "owner_email": "owner@example.invalid",
+    "reply_from": "info@example.invalid",
+    "phone": "+39 000 000 0000"
+  },
+
+  "languages": ["it", "en", "de", "fr", "es", "nl"],
+
+  "booking": {
+    "engine": "example-engine",
+    "direct_url": "https://example.invalid/booking",
+    "direct_advantage": "Booking on our own site includes breakfast for two and a late check-out at 13:00, subject to availability.",
+    "rate_source": "static"
+  },
+
+  "room_types": [
+    { "name": "Classic Doppia", "sleeps": 2, "beds": "one queen or two singles", "size_sqm": 22, "view": "garden or village side", "notes": "No balcony." },
+    { "name": "Superior Lago", "sleeps": 2, "beds": "one queen", "size_sqm": 28, "view": "lake", "notes": "French balcony." },
+    { "name": "Junior Suite", "sleeps": 3, "beds": "one queen plus a single sofa bed", "size_sqm": 36, "view": "lake", "notes": "Full balcony. The sofa bed suits a child or one adult." },
+    { "name": "Famiglia", "sleeps": 4, "beds": "one queen plus two singles in a connected second room", "size_sqm": 44, "view": "garden side", "notes": "The two rooms connect through an internal door and are only sold together." }
+  ],
+
+  "facts": {
+    "check_in": "From 15:00. Reception is staffed 07:00–22:00; later arrivals must be arranged in advance.",
+    "check_out": "By 11:00.",
+    "breakfast": "Buffet, 07:30–10:00, included in all direct bookings.",
+    "parking": "14 private spaces, €18 per night, must be reserved in advance as there are fewer spaces than rooms.",
+    "pets": "One dog up to 10kg is welcome, €20 per stay. Not permitted in the breakfast room.",
+    "children": "Children of all ages welcome. Under 3 stay free in a cot.",
+    "cots": "Free, on request, two available.",
+    "extra_beds": "€45 per night, only in the Junior Suite.",
+    "accessibility": "One ground-floor room with a step-free bathroom. The building is 19th century and the lift does not reach the third floor.",
+    "air_conditioning": "In all rooms.",
+    "wifi": "Free throughout.",
+    "pool": "No pool. Private lake access and a swimming platform, 150m from the hotel.",
+    "restaurant": "Breakfast only. Six restaurants within a five-minute walk.",
+    "smoking": "Non-smoking throughout; smoking permitted on the terrace.",
+    "payment_methods": "Visa, Mastercard, Amex, bank transfer, cash up to the legal limit.",
+    "city_tax": "€2.50 per person per night for guests over 12, paid at the hotel, not included in the room rate.",
+    "cancellation": "Free cancellation up to 7 days before arrival. Inside 7 days, one night is charged.",
+    "deposit": "One night taken at booking as a deposit.",
+    "nearest_station": "Varenna-Esino, then the ferry to Menaggio, about 20 minutes.",
+    "nearest_airport": "Milan Malpensa, about 1h45 by car.",
+    "transfers": "A private transfer from Malpensa can be arranged, €180 each way, booked at least 48 hours ahead.",
+    "season": "Open 20 March to 5 November."
+  },
+
+  "faq": [
+    { "q": "Is the hotel on the lake itself?", "a": "The hotel is 150m from the shore, with its own private lake access and swimming platform." },
+    { "q": "Can we arrive by ferry?", "a": "Yes. The Menaggio ferry landing is a seven-minute walk." },
+    { "q": "Is there a lift?", "a": "Yes, but it does not reach the third floor." }
+  ],
+
+  "rate_card": {
+    "currency": "EUR",
+    "_note": "Example rates for the demo only. In a real property these come from the booking engine, never from this file.",
+    "periods": [
+      { "from": "2026-03-20", "to": "2026-05-31", "rates": { "Classic Doppia": 160, "Superior Lago": 210, "Junior Suite": 280, "Famiglia": 330 } },
+      { "from": "2026-06-01", "to": "2026-09-15", "rates": { "Classic Doppia": 235, "Superior Lago": 310, "Junior Suite": 395, "Famiglia": 460 } },
+      { "from": "2026-09-16", "to": "2026-11-05", "rates": { "Classic Doppia": 175, "Superior Lago": 225, "Junior Suite": 295, "Famiglia": 345 } }
+    ]
+  },
+
+  "escalate": {
+    "always": [
+      "groups of 5 rooms or more",
+      "weddings and events",
+      "complaints of any kind",
+      "requests for a discount or a rate not on the rate card",
+      "anything about an existing booking",
+      "anything the file does not answer"
+    ],
+    "note_to_owner_language": "it"
+  }
+}
