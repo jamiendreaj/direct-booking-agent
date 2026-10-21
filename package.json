@@ -5,6 +5,7 @@
   "type": "module",
   "description": "A multilingual pre-booking enquiry agent for independent hotels. Answers in the guest's language, grounded only in the property's own information, and routes the booking direct.",
   "scripts": {
+    "test": "node --test \"src/*.test.js\"",
     "reply": "node src/cli.js",
     "eval": "node evals/run.js",
     "eval:one": "node evals/run.js --case"

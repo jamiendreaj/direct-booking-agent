@@ -3,3 +3,11 @@ node_modules/
 *.local
 logs/
 .DS_Store
+
+# ── Client material stays out of this repo ──────────────────────────
+# Every real property dossier is commercial-in-confidence: rates, owner
+# contacts, and the house instructions tuned for that hotel. Only the
+# template and the fictional demo property are tracked.
+properties/*.json
+!properties/_template.json
+!properties/example-lakecomo.json

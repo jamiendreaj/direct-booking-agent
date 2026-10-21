@@ -1,0 +1,21 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      # No API key is set, and that is deliberate: the agent loop is driven
+      # through an injected client, so the whole suite runs offline. A test
+      # that needs the network is a test that will one day fail for a reason
+      # that has nothing to do with the code.
+      - run: npm test

@@ -173,10 +173,71 @@ src/
   property.js     dossier loading and loud validation
   adapters/       rate and availability sources
   cli.js          one enquiry in, one draft out
-properties/       one JSON dossier per hotel
+  *.test.js       31 tests, no network, no API key
+properties/       one JSON dossier per hotel (real ones gitignored)
 evals/            42 cases, two-layer grading
 dashboard/        the owner-facing results page
 ```
+
+## Tests
+
+```bash
+npm test
+```
+
+31 tests, all offline. `reply()` takes an injectable `client`, so the whole
+agent loop runs against scripted responses — no network, no API key, nothing
+that fails for a reason unrelated to the code. CI runs the same command.
+
+The suite concentrates on the two places this system can embarrass a hotel:
+
+**`guardrails.js`** — every rule, in every language it claims to cover. A price
+no tool returned. A booking confirmed that was never held. Card details echoed
+back. An Italian reply to a German guest. Plus the quieter cases: European
+decimal formatting (`1.234,56` is twelve hundred, not one point two), and a
+year in a sentence about the building is not a price.
+
+**`agent.js`** — the failure modes that look identical to naive code. A
+truncated reply, a refusal, a blown token budget, and the one that catches
+people out: a response that finishes cleanly and contains **no text block at
+all**, because reasoning consumed the output budget. Reading `content[0].text`
+there throws an error that says nothing about the cause. The agent names it
+instead, in `blocked_because`.
+
+## Cost
+
+A tool loop is where spend runs away: the model calls a tool, dislikes the
+answer, calls it again, and every turn resends the whole conversation.
+`MAX_TURNS` caps how many round trips there are. `DEFAULT_TOKEN_BUDGET` caps
+how large they get, which is the number that reaches the bill.
+
+```js
+const r = await reply({ property, enquiry, tokenBudget: 25_000 });
+r.tokens_used      // what it actually spent
+r.budget_exhausted // true if it stopped at the ceiling
+```
+
+The budget is checked *before* running tools, not after — a tool result returns
+as input on the next turn, so continuing past the ceiling spends again. The
+system prompt is cached, so a second enquiry at the same property re-reads the
+dossier at a fraction of the cost.
+
+## What is in this repository, and what is not
+
+The framework is public. Client material is not.
+
+Only `_template.json` and the fictional `example-lakecomo.json` are tracked;
+every other property dossier is gitignored. Dossiers carry rates, owner contact
+details, and a `prompt_overlay` field whose contents are appended to the system
+prompt as house instructions for that hotel.
+
+That is deliberate. The overlay is where per-client tuning accumulates — the
+phrasing an owner wants, the question that keeps coming up, the thing that went
+wrong last month. It is appended last so it can sharpen the standing rules, and
+it cannot loosen them: the three grounding rules and the escalation list are not
+overridable from a dossier.
+
+See [`properties/README.md`](properties/README.md).
 
 ## Scope
 
@@ -186,4 +247,5 @@ write access. Each one is also a way to not ship.
 
 ---
 
-Private. Not for distribution.
+The framework is open. Property dossiers, client data and per-hotel
+instructions are not, and never enter this repository.

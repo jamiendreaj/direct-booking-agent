@@ -8,13 +8,50 @@ export const MAX_TOKENS = 1600;
 const MAX_TURNS = 8;
 
 /**
+ * A ceiling on what one enquiry may cost, counted in tokens rather than money
+ * so it stays true when prices change.
+ *
+ * A tool loop is where runaway spend actually happens: the model calls a tool,
+ * dislikes the answer, calls it again, and every turn resends the whole
+ * conversation. MAX_TURNS caps how many round trips there are; this caps how
+ * big they get, which is the number that reaches the bill.
+ */
+export const DEFAULT_TOKEN_BUDGET = 60_000;
+
+/** Why a draft cannot be sent. Null when it can. */
+function blockedBecause({ stop, text, verdict }) {
+  if (stop === 'budget_exhausted') return 'The token budget for this enquiry ran out before the model finished.';
+  if (stop === 'max_tokens') return 'The model hit max_tokens and the reply is cut off.';
+  if (stop === 'refusal') return 'The model refused to answer.';
+  if (stop === 'max_turns') return 'The tool loop ran out of turns without producing a reply.';
+  if (stop !== 'end_turn') return `The model stopped for an unrecognised reason: ${stop}.`;
+  if (!text.length) {
+    // The trap: a model can finish cleanly and still return no text block —
+    // reasoning consumed the output budget. Reading content[0].text here gives
+    // a null-property error that says nothing about the real cause.
+    return 'The model finished but produced no text, usually because reasoning consumed the output budget.';
+  }
+  if (!verdict.ok) {
+    return `Guardrails blocked it: ${verdict.issues.filter((i) => i.severity === 'block').map((i) => i.rule).join(', ')}.`;
+  }
+  return null;
+}
+
+/**
  * One enquiry in, one reply out.
  *
  * Returns the draft rather than sending it. Nothing in this file touches a
  * mail server — approval mode is the default and sending is deliberately
  * somebody else's job.
  */
-export async function reply({ property, enquiry, mode = 'approve', expectLanguage = null, client }) {
+export async function reply({
+  property,
+  enquiry,
+  mode = 'approve',
+  expectLanguage = null,
+  client,
+  tokenBudget = DEFAULT_TOKEN_BUDGET,
+}) {
   const anthropic = client ?? new Anthropic();
   const started = Date.now();
 
@@ -53,6 +90,19 @@ export async function reply({ property, enquiry, mode = 'approve', expectLanguag
     const uses = res.content.filter((b) => b.type === 'tool_use');
     if (!uses.length) break;
 
+    // Checked before running the tools, not after: a tool result goes back as
+    // input on the next turn, so continuing past the ceiling spends again.
+    const spent = usage.input + usage.output + usage.cache_read + usage.cache_write;
+    if (spent >= tokenBudget) {
+      stop = 'budget_exhausted';
+      break;
+    }
+
+    if (turn === MAX_TURNS - 1) {
+      stop = 'max_turns';
+      break;
+    }
+
     const results = [];
     for (const u of uses) {
       let out;
@@ -77,20 +127,26 @@ export async function reply({ property, enquiry, mode = 'approve', expectLanguag
     .join('\n\n');
 
   const verdict = check(text, { toolResults, property, expectLanguage });
+  const reason = blockedBecause({ stop, text, verdict });
 
   return {
     draft: text,
     stop_reason: stop,
     truncated: stop === 'max_tokens',
     refused: stop === 'refusal',
+    budget_exhausted: stop === 'budget_exhausted',
     tool_calls: toolCalls,
     escalations: ctx.escalations,
     escalated: ctx.escalations.length > 0,
     guardrails: verdict,
     /** A reply only goes out if the model finished AND the guardrails passed. */
-    sendable: verdict.ok && stop === 'end_turn' && text.length > 0,
+    sendable: reason === null,
+    /** Null when sendable; otherwise one sentence a human can act on. */
+    blocked_because: reason,
     mode,
     latency_ms: Date.now() - started,
     usage,
+    token_budget: tokenBudget,
+    tokens_used: usage.input + usage.output + usage.cache_read + usage.cache_write,
   };
 }

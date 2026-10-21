@@ -80,5 +80,22 @@ Escalation is a success, not a failure. An honest handover keeps the guest; a co
 
 ${mode === 'approve'
   ? '════════ APPROVAL MODE ════════\n\nYour reply will be read and approved by the hotel before it reaches the guest. Write it as the final text to be sent — no notes to the owner, no placeholders, no square brackets to fill in.'
-  : '════════ LIVE MODE ════════\n\nYour reply goes to the guest as written. Re-read it once against the three rules before you finish.'}`;
+  : '════════ LIVE MODE ════════\n\nYour reply goes to the guest as written. Re-read it once against the three rules before you finish.'}
+${overlay(property)}`;
+}
+
+/**
+ * House instructions for one property, appended last so they can sharpen the
+ * rules above but never loosen them.
+ *
+ * This is where per-hotel tuning lives — the phrasing an owner wants, the
+ * questions that keep coming up, the thing that went wrong last month. It sits
+ * in the property dossier rather than in this file because dossiers are
+ * gitignored: the framework is public, what we learned running it for a
+ * particular hotel is not.
+ */
+function overlay(p) {
+  const text = (p.prompt_overlay ?? '').trim();
+  if (!text) return '';
+  return `\n════════ HOUSE INSTRUCTIONS — ${p.name} ════════\n\n${text}\n\nThese refine the rules above. They never override THE THREE RULES or the escalation list.`;
 }
