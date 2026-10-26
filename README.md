@@ -10,13 +10,13 @@ Built against the business plan: one sector, one agent, one first client.
 
 ## Why this exists
 
-Independent hotels lose most of their bookings to OTAs at an all-in cost of
-18–30%, against something in the region of 3–12% on the direct channel.[^cost] The
-bookings are not usually lost on price — they are lost on **response time and
-language**. A German family emails at
-21:00 asking whether the room sleeps four and whether the dog is allowed; the owner
-reads it at 08:00; by then the guest has booked on an OTA, where the answer was
-visible instantly.
+Independent hotels took **63.4% of their 2025 bookings through OTAs**[^share] at
+an all-in cost of 18–30%, against something in the region of 3–12% on the direct
+channel.[^cost] In EMEA the OTA share is **76.5%**. The bookings are not usually
+lost on price — they are lost on **response time and language**. A German family
+emails at 21:00 asking whether the room sleeps four and whether the dog is
+allowed; the owner reads it at 08:00; by then the guest has booked on an OTA,
+where the answer was visible instantly.
 
 The hotel had already won that guest. It just answered too slowly, in the wrong
 language.
@@ -252,6 +252,14 @@ The framework is open. Property dossiers, client data and per-hotel
 instructions are not, and never enter this repository.
 
 ---
+
+[^share]: [Cloudbeds, *2026 State of Independent Hotels*](https://www.asianhospitality.com/otas-vs-direct-bookings-independent-hotels-report/)
+    — 63.4% of independent hotel bookings came through OTAs in 2025, from 90
+    million bookings across 180 countries, up from 61% the year before. EMEA is
+    76.5%, which is the relevant number for an Italian property. The same report
+    gives a second figure worth more than it looks: **21.8% of OTA bookings were
+    cancelled, against 10.6% of direct bookings** — so the commission is being
+    paid on a channel that also delivers twice the cancellations.
 
 [^cost]: **Where those figures come from, and how far to trust them.**
     There is no peer-reviewed study behind either number. Every available source
