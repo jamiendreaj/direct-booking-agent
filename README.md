@@ -10,9 +10,10 @@ Built against the business plan: one sector, one agent, one first client.
 
 ## Why this exists
 
-Independent hotels lose about 63% of their bookings to OTAs at an all-in cost of
-18–30%, against 5–12% on the direct channel. The bookings are not usually lost on
-price — they are lost on **response time and language**. A German family emails at
+Independent hotels lose most of their bookings to OTAs at an all-in cost of
+18–30%, against something in the region of 3–12% on the direct channel.[^cost] The
+bookings are not usually lost on price — they are lost on **response time and
+language**. A German family emails at
 21:00 asking whether the room sleeps four and whether the dog is allowed; the owner
 reads it at 08:00; by then the guest has booked on an OTA, where the answer was
 visible instantly.
@@ -249,3 +250,31 @@ write access. Each one is also a way to not ship.
 
 The framework is open. Property dossiers, client data and per-hotel
 instructions are not, and never enter this repository.
+
+---
+
+[^cost]: **Where those figures come from, and how far to trust them.**
+    There is no peer-reviewed study behind either number. Every available source
+    is an industry vendor with a stake in the answer, so these are estimates and
+    the ranges below are the honest version of them.
+
+    *OTA side.* The headline commission is around 15–17% at Booking.com and
+    18–22% across Expedia's brands. The 18–30% is the **all-in** cost, once
+    optional programmes are added on top — Genius at about 10% and Visibility
+    Booster at 3–5%. A hotel not enrolled in those pays the lower end.
+
+    *Direct side.* The spread is wide because the sources are measuring
+    different things, which matters more than the numbers:
+    [HotelsSEO](https://hotelsseo.com/resources/statistics/ota-vs-direct-booking-cost-statistics)
+    gives 5–12% counting SEO, paid search and email;
+    [Light House](https://www.mylighthouse.com/resources/blog/direct-bookings-vs-otas-practical-guide)
+    gives 4–5%; [Tribii](https://tribii.com/journal/the-second-tab) gives 3–8%;
+    and [HotelGuru](https://hotelguru.com/articles/what-otas-actually-cost-in-2026/)
+    gives a flat $3–7 per booking for the booking engine alone. Count only card
+    fees and the booking engine and it is a few percent. Attribute marketing
+    spend to it and it reaches the top of the range.
+
+    The part that holds regardless of definition: **a direct booking carries no
+    commission**, and the gap is large enough that the arithmetic survives any
+    of these readings. A hotel should be quoted its own contracted rate rather
+    than a range off the internet.
