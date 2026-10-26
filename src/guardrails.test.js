@@ -195,6 +195,28 @@ test('blocks a confirmed booking in Arabic', () => {
   }
 });
 
+test('blocks a confirmed booking in Hebrew', () => {
+  for (const line of [
+    'אישרתי עבורך את החדר.',
+    'ההזמנה שלך אושרה.',
+    'הזמנתי לך חדר עם נוף לאגם.',
+  ]) {
+    assert.deepEqual(blocked(check(line, base)), ['confirmed_booking'], line);
+  }
+});
+
+test('Hebrew card patterns survive the definite article', () => {
+  // Hebrew prefixes ה onto the noun: הכרטיס, not ה כרטיס. The first version of
+  // this pattern wanted a bare כרטיס and matched nothing in a real sentence.
+  for (const line of [
+    'נא לשלוח את מספר הכרטיס.',
+    'אפשר לשלוח מספר כרטיס אשראי?',
+    'מה מספר החשבון שלך?',
+  ]) {
+    assert.equal(check(line, base).ok, false, line);
+  }
+});
+
 test('blocks card details in Chinese, Russian and Arabic', () => {
   for (const line of [
     '请发送您的卡号。',
@@ -209,7 +231,7 @@ test('a reply in the wrong script is blocked', () => {
   // The failure that actually happens: the model answers a Cyrillic enquiry in
   // English, because English is where it is most comfortable.
   const english = 'Yes, the room sleeps four and the dog is welcome.';
-  for (const lang of ['ru', 'zh', 'ar']) {
+  for (const lang of ['ru', 'zh', 'ar', 'he']) {
     const r = check(english, { ...base, expectLanguage: lang });
     assert.ok(blocked(r).includes('wrong_language'), `${lang} should have been blocked`);
   }
@@ -220,6 +242,7 @@ test('a reply in the right script passes', () => {
     ['ru', 'Да, номер вмещает четырёх человек, и собака тоже может приехать.'],
     ['zh', '是的，这间房可住四人，也欢迎携带宠物犬。'],
     ['ar', 'نعم، تتسع الغرفة لأربعة أشخاص، والكلب مرحب به أيضًا.'],
+    ['he', 'כן, החדר מתאים לארבעה אנשים, וגם הכלב מוזמן.'],
   ];
   for (const [lang, reply] of ok) {
     assert.equal(check(reply, { ...base, expectLanguage: lang }).ok, true, lang);

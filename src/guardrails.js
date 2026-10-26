@@ -29,6 +29,9 @@ const CONFIRMS = [
   /تم\s*(?:تأكيد|الحجز|حجز|تاكيد)/,
   /(?:حجزت|أكدت|اكدت)\s*ل(?:ك|كم|كِ)/,
   /غرفت(?:ك|كم|كِ)\s*(?:محجوزة|مؤكدة)/,
+  // Hebrew, written without niqqud, which an email would never carry.
+  /(?:אישרתי|אישרנו|הזמנתי|הזמנו|שמרתי|שריינתי)/,
+  /ה(?:הזמנה|חדר)\s*(?:שלך|שלכם)?\s*(?:אושרה|אושר|מוזמן|שמור)/,
 ];
 
 const CARD = new RegExp(
@@ -38,6 +41,9 @@ const CARD = new RegExp(
     '(?:卡号|卡號|信用卡号|信用卡號|银行账号|銀行賬號)',
     '(?:номер\\s+карты|реквизиты\\s+карты|номер\\s+сч(?:е|ё)та)',
     '(?:رقم\\s*البطاقة|بطاقة\\s*الائتمان|الآيبان|رقم\\s*الحساب)',
+    // Hebrew prefixes the definite article onto the noun (הכרטיס, not ה כרטיס),
+    // so every noun here takes an optional leading ה.
+    '(?:מספר\\s*ה?כרטיס|ה?כרטיס\\s*ה?אשראי|מספר\\s*ה?חשבון)',
   ].join('|'),
   'i',
 );
@@ -55,6 +61,7 @@ const SCRIPT = {
   zh: { re: /[\u4E00-\u9FFF]/, name: 'Chinese characters' },
   ru: { re: /[\u0400-\u04FF]/, name: 'Cyrillic' },
   ar: { re: /[\u0600-\u06FF]/, name: 'Arabic script' },
+  he: { re: /[\u0590-\u05FF]/, name: 'Hebrew script' },
 };
 
 function numbersIn(text) {

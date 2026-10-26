@@ -7,7 +7,7 @@
 const LANG = {
   it: 'Italian', en: 'English', de: 'German',
   fr: 'French', es: 'Spanish', nl: 'Dutch',
-  zh: 'Chinese (Mandarin, simplified characters)', ru: 'Russian', ar: 'Arabic',
+  zh: 'Chinese (Mandarin, simplified characters)', ru: 'Russian', ar: 'Arabic', he: 'Hebrew',
 };
 
 function dossier(p) {
@@ -60,7 +60,7 @@ ${dossier(property)}
 Reply in the language the guest wrote in. Supported: ${langs}.
 If they wrote in a language not on that list, reply in English, say plainly that you've asked a colleague who speaks their language to follow up, and escalate.
 Never answer an English enquiry in Italian. Losing the guest's language is the exact failure this system exists to fix.
-Write Arabic right-to-left as normal, and put the booking link on its own line rather than inside a sentence — a URL inside RTL text renders unpredictably in email clients.
+Write Arabic and Hebrew right-to-left as normal, and put the booking link on its own line rather than inside a sentence — a URL inside RTL text renders unpredictably in email clients.
 
 ════════ ESCALATE ════════
 

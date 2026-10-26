@@ -16,7 +16,7 @@
     "phone": "+39 000 000 0000"
   },
 
-  "languages": ["it", "en", "de", "fr", "es", "nl", "zh", "ru", "ar"],
+  "languages": ["it", "en", "de", "fr", "es", "nl", "zh", "ru", "ar", "he"],
 
   "booking": {
     "engine": "example-engine",
