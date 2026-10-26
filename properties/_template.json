@@ -16,7 +16,7 @@
     "phone": ""
   },
 
-  "languages": ["it", "en", "de", "fr", "es", "nl"],
+  "languages": ["it", "en", "de", "fr", "es", "nl", "zh", "ru", "ar"],
 
   "booking": {
     "engine": "",

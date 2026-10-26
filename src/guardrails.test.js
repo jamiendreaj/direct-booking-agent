@@ -155,3 +155,86 @@ test('a year is not mistaken for a price', () => {
   const r = check('The villa was built in 1890 and restored in 2019.', base);
   assert.deepEqual(blocked(r), [], 'bare numbers without a currency are not prices');
 });
+
+/* ── Chinese, Russian and Arabic ──────────────────────────────────────────
+ *
+ * Added when the supported languages grew. Worth their own block because the
+ * first version of the Russian patterns used \b and silently never matched:
+ * JavaScript's \w is ASCII-only, so there is no word boundary beside a
+ * Cyrillic letter. The regex compiled, the tests would have passed if written
+ * loosely, and a confirmed booking in Russian would have gone to a guest.
+ */
+
+test('blocks a confirmed booking in Chinese', () => {
+  for (const line of [
+    '您的房间已确认，期待您的到来。',
+    '我们为您保留了湖景房。',
+    '您的房間已確認。',
+  ]) {
+    assert.deepEqual(blocked(check(line, base)), ['confirmed_booking'], line);
+  }
+});
+
+test('blocks a confirmed booking in Russian', () => {
+  for (const line of [
+    'Я забронировал для вас номер.',
+    'Подтверждаю бронирование.',
+    'Номер зарезервирован на ваше имя.',
+  ]) {
+    assert.deepEqual(blocked(check(line, base)), ['confirmed_booking'], line);
+  }
+});
+
+test('blocks a confirmed booking in Arabic', () => {
+  for (const line of [
+    'تم تأكيد حجزك.',
+    'حجزت لك غرفة مطلة على البحيرة.',
+    'غرفتك محجوزة.',
+  ]) {
+    assert.deepEqual(blocked(check(line, base)), ['confirmed_booking'], line);
+  }
+});
+
+test('blocks card details in Chinese, Russian and Arabic', () => {
+  for (const line of [
+    '请发送您的卡号。',
+    'Пришлите номер карты.',
+    'يرجى إرسال رقم البطاقة.',
+  ]) {
+    assert.equal(check(line, base).ok, false, line);
+  }
+});
+
+test('a reply in the wrong script is blocked', () => {
+  // The failure that actually happens: the model answers a Cyrillic enquiry in
+  // English, because English is where it is most comfortable.
+  const english = 'Yes, the room sleeps four and the dog is welcome.';
+  for (const lang of ['ru', 'zh', 'ar']) {
+    const r = check(english, { ...base, expectLanguage: lang });
+    assert.ok(blocked(r).includes('wrong_language'), `${lang} should have been blocked`);
+  }
+});
+
+test('a reply in the right script passes', () => {
+  const ok = [
+    ['ru', 'Да, номер вмещает четырёх человек, и собака тоже может приехать.'],
+    ['zh', '是的，这间房可住四人，也欢迎携带宠物犬。'],
+    ['ar', 'نعم، تتسع الغرفة لأربعة أشخاص، والكلب مرحب به أيضًا.'],
+  ];
+  for (const [lang, reply] of ok) {
+    assert.equal(check(reply, { ...base, expectLanguage: lang }).ok, true, lang);
+  }
+});
+
+test('the script check does not fire on an empty draft', () => {
+  // An empty reply is the agent's problem to report, not a language failure.
+  const r = check('', { ...base, expectLanguage: 'ru' });
+  assert.equal(blocked(r).includes('wrong_language'), false);
+});
+
+test('Cyrillic patterns do not rely on word boundaries', () => {
+  // Guards the exact bug: \b beside a Cyrillic letter never matches in JS.
+  assert.equal(/\b(?:забронирова)/i.test('Я забронировал номер'), false,
+    'if this ever becomes true, JS changed and the comment above is stale');
+  assert.deepEqual(blocked(check('Я забронировал номер', base)), ['confirmed_booking']);
+});

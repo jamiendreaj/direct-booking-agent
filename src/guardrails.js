@@ -16,9 +16,46 @@ const CONFIRMS = [
   /\b(?:la\s+)?(?:sua\s+)?(?:camera|prenotazione)\s+è\s+(?:confermata|prenotata)\b/i,
   /\bich\s+habe\s+(?:das\s+Zimmer\s+)?(?:reserviert|gebucht|best(?:ä|ae)tigt)\b/i,
   /\bihr\s+Zimmer\s+ist\s+(?:reserviert|gebucht|best(?:ä|ae)tigt)\b/i,
+  // Chinese has no word boundaries, so \b is useless here — match the phrase.
+  // Both character sets, because a guest writing traditional gets a reply in kind.
+  /已(?:经|經)?(?:确认|確認|预订|預訂|预定|預定|保留|预留|預留)/,
+  /(?:为您|為您)(?:保留|预订|預訂|预留|預留|确认|確認)/,
+  /(?:房间|房間|预订|預訂)(?:已|都已)(?:确认|確認|保留)/,
+  // Russian: the stem carries it across person, gender and aspect.
+  // No \b — JavaScript's \w is ASCII-only, so there is no word boundary beside
+  // a Cyrillic letter and the pattern would never match.
+  /(?:подтвержда|подтвержде|подтвердил|забронирова|зарезервирова)/i,
+  // Arabic, written without the optional diacritics an email would omit.
+  /تم\s*(?:تأكيد|الحجز|حجز|تاكيد)/,
+  /(?:حجزت|أكدت|اكدت)\s*ل(?:ك|كم|كِ)/,
+  /غرفت(?:ك|كم|كِ)\s*(?:محجوزة|مؤكدة)/,
 ];
 
-const CARD = /\b(?:card\s+number|cvv|numero\s+di\s+carta|kreditkartennummer|iban)\b/i;
+const CARD = new RegExp(
+  [
+    '\\b(?:card\\s+number|cvv|numero\\s+di\\s+carta|kreditkartennummer|iban)\\b',
+    // No \b for Chinese or Arabic — neither script has word boundaries.
+    '(?:卡号|卡號|信用卡号|信用卡號|银行账号|銀行賬號)',
+    '(?:номер\\s+карты|реквизиты\\s+карты|номер\\s+сч(?:е|ё)та)',
+    '(?:رقم\\s*البطاقة|بطاقة\\s*الائتمان|الآيبان|رقم\\s*الحساب)',
+  ].join('|'),
+  'i',
+);
+
+/*
+ * A reply in the wrong SCRIPT, which is the cheap half of the language check.
+ *
+ * Italian leaking into a German reply needs vocabulary to detect. Chinese,
+ * Russian and Arabic do not: a reply that claims to be in one of them and
+ * contains none of its characters is wrong, whatever the words are. This is the
+ * failure that actually happens — the model answers a Cyrillic enquiry in
+ * English because English is where it is most comfortable.
+ */
+const SCRIPT = {
+  zh: { re: /[\u4E00-\u9FFF]/, name: 'Chinese characters' },
+  ru: { re: /[\u0400-\u04FF]/, name: 'Cyrillic' },
+  ar: { re: /[\u0600-\u06FF]/, name: 'Arabic script' },
+};
 
 function numbersIn(text) {
   const out = new Set();
@@ -72,6 +109,15 @@ export function check(reply, { toolResults, property, expectLanguage }) {
     const looksItalian = /\b(?:gentile|cordiali saluti|camera|prenotazione|colazione|disponibilit)/i.test(reply);
     if (expectLanguage !== 'it' && looksItalian) {
       issues.push({ rule: 'wrong_language', severity: 'block', detail: `Guest wrote in "${expectLanguage}" but the reply reads as Italian.` });
+    }
+
+    const script = SCRIPT[expectLanguage];
+    if (script && reply.trim() && !script.re.test(reply)) {
+      issues.push({
+        rule: 'wrong_language',
+        severity: 'block',
+        detail: `Guest wrote in "${expectLanguage}" but the reply contains no ${script.name}.`,
+      });
     }
   }
 
