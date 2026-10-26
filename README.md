@@ -173,7 +173,7 @@ src/
   property.js     dossier loading and loud validation
   adapters/       rate and availability sources
   cli.js          one enquiry in, one draft out
-  *.test.js       31 tests, no network, no API key
+  *.test.js       41 tests, no network, no API key
 properties/       one JSON dossier per hotel (real ones gitignored)
 evals/            42 cases, two-layer grading
 dashboard/        the owner-facing results page
@@ -185,7 +185,7 @@ dashboard/        the owner-facing results page
 npm test
 ```
 
-31 tests, all offline. `reply()` takes an injectable `client`, so the whole
+41 tests, all offline. `reply()` takes an injectable `client`, so the whole
 agent loop runs against scripted responses — no network, no API key, nothing
 that fails for a reason unrelated to the code. CI runs the same command.
 
